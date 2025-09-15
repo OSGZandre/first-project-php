@@ -33,26 +33,5 @@
                     </div>
                 </form>
         <hr />
-        <h1>Usuários Cadastrados</h1>
-        <div class="mb-3" >
-            {% if users|length > 0 %}
-                {% for row in users %}
-                    <div class="card" style="width: 25rem;">
-                        <img src="..." class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h4 class="card-title">
-                                Nome: {{ row.userName }}<br />
-                                Email: {{ row.email }}<br />
-                                Telefone: {{ row.telephoneNumber }}<br />
-                            </h4>
-                            <a href="{{ path('app_admin') }}" class="btn btn-primary">Lista de Usuários</a>
-                        </div>
-                    </div>
-                    <br />
-                {% endfor %}
-            {% else %}
-                <p>Nenhum usuário.</p>
-            {% endif %}
-        </div>
     </div>
 {% endblock %}
