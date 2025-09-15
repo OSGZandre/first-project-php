@@ -21,7 +21,7 @@ class UserTable
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $name;
+    private $userName;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -35,13 +35,6 @@ class UserTable
     private $telephoneNumber;
 
 
-    /**
-     * @ORM\Column(type="integer", name="isAdmin",  length=1)
-     * 
-     */
-    private $isAdmin;
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -49,12 +42,12 @@ class UserTable
 
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->userName;
     }
 
-    public function setName(string $name): self
+    public function setName(string $userName): self
     {
-        $this->name = $name;
+        $this->name = $userName;
 
         return $this;
     }
@@ -81,15 +74,5 @@ class UserTable
         $this->telephoneNumber = $telephoneNumber;
 
         return $this;
-    }
-    public function setAdmin(int $isAdmin): self
-    {
-        $this->isAdmin = $isAdmin;
-
-        return $this;
-    }
-    public function getAdmin(): ?int
-    {
-        return $this->isAdmin;
     }
 }

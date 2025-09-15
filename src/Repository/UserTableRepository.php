@@ -16,72 +16,40 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserTableRepository extends ServiceEntityRepository
 {
+    private $conn;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, UserTable::class);
+        $this->conn = $this->getEntityManager()->getConnection();
     }
 
-    public function add(UserTable $entity, bool $flush = false): void
+    public function listarUser()
     {
-        $this->getEntityManager()->persist($entity);
+        $sql = "SELECT id, userName, email, telephoneNumber FROM userTable";
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $query = $this->conn->query($sql);
+        return $query->fetchAllAssociative();
     }
 
-    public function remove(UserTable $entity, bool $flush = false): void
+    public function inserirUser($data)
     {
-        $this->getEntityManager()->remove($entity);
+        $sql = "INSERT INTO userTable (userName, email, telephoneNumber) VALUES (:userName, :email, :telephoneNumber)";
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':userName', $data['userName']);
+        $stmt->bindValue(':email', $data['email']);
+        $stmt->bindValue(':telephoneNumber', $data['telephoneNumber']);
+
+        return $stmt->execute();
     }
 
-    public function findAll(): array
+    public function buscarUserPorId($id)
     {
-        return $this->createQueryBuilder('u')
-            ->getQuery()
-            ->getResult();
+        $sql = "SELECT id, userName, email, telephoneNumber FROM userTable WHERE id = $id" ;
+
+        $stmt = $this->conn->query($sql);
+
+        return $stmt->fetchAssociative();
     }
-
-    /**public function findById(int $id): UserTable {
-        return $this->getEntityManager()->find(UserTable::class, $id);
-     }
-
-     public function lis
-     $sql = "SELECT id, name, email, telephoneNumber, isAdmin
-        FROM userTable
-        WHERE ";
-
-	$query = $this->db->query($sql);
-	$this->db->close();
-	
-	return $query;
-    
-//    /**
-//     * @return UserTable[] Returns an array of UserTable objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?UserTable
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
