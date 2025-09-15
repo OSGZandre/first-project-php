@@ -40,7 +40,7 @@ class AdminController extends AbstractController
         if ($request->isMethod('POST')) {
             $data = [
                 'id' => $id,
-                'userName' => $request->request->get('name'),
+                'userName' => $request->request->get('userName'),
                 'email' => $request->request->get('email'),
                 'telephoneNumber' => $request->request->get('telephoneNumber'),
             ];
@@ -55,5 +55,13 @@ class AdminController extends AbstractController
         return $this->render('admin/edit.html.twig', [
             'user' => $user,
         ]);
+    }
+    /**
+     * @Route("/admin/delete/{id}", name="app_admin_delete", methods={"GET","POST"})
+     */
+    public function deleteUser(Request $request, int $id): Response
+    {
+        $this->userRepository->removerUser($id);
+        return $this->redirectToRoute('app_admin');
     }
 }

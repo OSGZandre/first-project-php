@@ -14,7 +14,7 @@
 
         {{ form_start(form) }}
             {{ form_widget(form) }}
-            <button class="btn btn-primary">
+            <button class="btn btn-outline-success">
                 {% if app.request.get('id') %}
                     Atualizar
                 {% else %}
@@ -41,7 +41,8 @@
                     <td>{{ p.preco }}</td>
                     <td>{{ p.estoque }}</td>
                     <td>
-                        <a href="{{ path('produto_novo', {idProduto: p.idProduto}) }}" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="{{ path('produto_novo', {idProduto: p.idProduto}) }}" class="btn btn-outline-warning btn-sm">Editar</a>
+                        <a href="{{ path('produto_delete', {idProduto: p.idProduto}) }}" class="btn btn-outline-danger btn-sm">Remover</a>
                     </td>
                 </tr>
             {% endfor %}

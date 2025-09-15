@@ -49,8 +49,8 @@ class UserTableRepository extends ServiceEntityRepository
         $sql = "SELECT id, userName, email, telephoneNumber FROM userTable WHERE id = $id" ;
 
         $stmt = $this->conn->query($sql);
-
         return $stmt->fetchAssociative();
+
     }
     public function editarUser($data)
     {
@@ -62,6 +62,15 @@ class UserTableRepository extends ServiceEntityRepository
         $stmt->bindValue(':telephoneNumber', $data['telephoneNumber']);
         $stmt->bindValue(':id', $data['id']);
 
+        return $stmt->execute();
+    }
+
+    public function removerUser(int $id)
+    {
+        $sql = "DELETE FROM userTable WHERE id = :id ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id' , $id);
+        
         return $stmt->execute();
     }
 }

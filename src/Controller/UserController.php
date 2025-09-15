@@ -35,7 +35,7 @@ class UserController extends AbstractController
     public function saveName(Request $request): Response
     {
         $data = [
-            'userName' => $request->request->get('name'),
+            'userName' => $request->request->get('userName'),
             'email' => $request->request->get('email'),
             'telephoneNumber' => $request->request->get('telephoneNumber'),
         ];

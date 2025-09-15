@@ -57,4 +57,12 @@ class ProdutoRepository extends ServiceEntityRepository
 
         return $stmt->execute();
     }
+
+    public function removerProduto(int $idProduto)
+    {
+        $sql = 'DELETE FROM produto WHERE idProduto = :idProduto';
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':idProduto', $idProduto);
+        $stmt->execute();
+    }
 }

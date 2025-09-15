@@ -11,12 +11,16 @@
 
 <div class="example-wrapper">
     <h1>Editar Usuário</h1>
-    <div class="usuarios">
+    <div class="card" style="width 18rem;">
         {% if user is not null %}
-            <h2>ID: {{ user.id }}</h2>  
-            <h2>Nome: {{ user.userName }}</h2>
-            <h2>Email: {{ user.email }}</h2>
-            <h2>Telefone: {{ user.telephoneNumber }}</h2>
+        <div class="card-body">
+        <h1 class="card-title">Usuário:</h1>
+            <h3 class="card-text" >ID: {{ user.id }}</h3>  
+            <h3 class="card-text" >Nome: {{ user.userName }}</h3>
+            <h3 class="card-text" >Email: {{ user.email }}</h3>
+            <h3 class="card-text" >Telefone: {{ user.telephoneNumber }}</h3>
+        </div>
+        </div>    
             <hr /> 
             <form action="{{ path('app_admin_edit', {id: user.id}) }}" method="post"> 
                 <div>
@@ -26,10 +30,13 @@
                     <input class="form-control" type="email" name="email" value="{{ user.email }}" />
                     <label for="exampleInputEmail1" class="form-label">Número de telefone</label>
                     <input class="form-control" name="telephoneNumber" value="{{ user.telephoneNumber }}" /><br />
-                    <button class="btn btn-outline-primary" type="submit">Salvar</button>
+                    <button class="btn btn-outline-success" style="--bs-btn-padding-y: 0.35rem; --bs-btn-padding-x: 0.85rem; --bs-btn-font-size: 1.00rem;" type="submit">Salvar</button>
+                    <a class="btn btn-outline-danger" style="--bs-btn-padding-y: 0.35rem; --bs-btn-padding-x: 0.85rem; --bs-btn-font-size: 1.00rem;" type="button" href="{{ path('app_admin') }}">Voltar</a>
                 </div>
             </form>
-            <a href="{{ path('app_admin') }}">Voltar</a>
+            <!-- <a class="btn btn-outline-danger" style= "--bs-btn-padding-y: 0.35rem; --bs-btn-padding-x: 1.00rem; --bs-btn-font-size: 1.00rem;" 
+            href="{{ path('app_admin') }}">Voltar</a>
+            -->
         {% else %}
             <p>Nenhum usuário encontrado.</p>
         {% endif %}

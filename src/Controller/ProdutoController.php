@@ -42,4 +42,13 @@ class ProdutoController extends AbstractController
             'produtos'=> $produtos
             ]); 
         }
+        
+        /**
+         * @Route("/produto/delete/{idProduto}", name="produto_delete", methods={"GET"})
+         */
+        public function deleteProduto(int $idProduto, ProdutoRepository $produtoRepository): Response
+        {
+            $produtoRepository->removerProduto($idProduto);
+            return $this->redirectToRoute('produto_novo');
+        }
 }

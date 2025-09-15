@@ -19,14 +19,14 @@
             {% if user|length > 0 %}
                 {% for user in user %}
                     <div class="card" style="width: 25rem;">
-                        <img src="..." class="card-img-top" alt="...">
                         <div class="card-body">
                             <h4 class="card-title">
                                 Nome: {{ user.userName }}<br />
                                 Email: {{ user.email }}<br />
                                 Telefone: {{ user.telephoneNumber }}<br />
                             </h4>
-                            <a class="btn btn-primary" href="{{ path('app_admin_edit', {id: user.id}) }}">Editar</a>
+                            <a class="btn btn-outline-success" href="{{ path('app_admin_edit', {id: user.id}) }}">Editar</a>
+                            <a class="btn btn-outline-danger" href="{{ path('app_admin_delete', {id: user.id}) }}">Remover</a>
                         </div>
                     </div>
                     <br />
