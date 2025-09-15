@@ -13,7 +13,7 @@ class ProdutoRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Produto::class);
-        $this->conn = $registry->getManager()->getConnection();
+        $this->conn = $this->getEntityManager()->getConnection();
     }
 
     public function listaProdutos()
@@ -21,18 +21,16 @@ class ProdutoRepository extends ServiceEntityRepository
         $sql = "SELECT idProduto, nameProduto, preco, estoque FROM produto";
 
         $query = $this->conn->query($sql);
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     public function buscaProdutoPorId($idProduto)
     {
-        $sql = "SELECT idProduto, nameProduto, preco, estoque FROM produto WHERE idProduto = :idProduto";
+        $sql = "SELECT idProduto, nameProduto, preco, estoque FROM produto WHERE idProduto = $idProduto" ;
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':idProduto', $idProduto);
-        $stmt->execute();
+        $stmt = $this->conn->query($sql);
 
-        return $stmt->fetch();
+        return $stmt->fetchAssociative();
     }
 
     public function inserirProduto($data)
