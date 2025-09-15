@@ -52,4 +52,16 @@ class UserTableRepository extends ServiceEntityRepository
 
         return $stmt->fetchAssociative();
     }
+    public function editarUser($data)
+    {
+        $sql = "UPDATE userTable SET userName = :userName, email = :email, telephoneNumber = :telephoneNumber WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':userName', $data['userName']);
+        $stmt->bindValue(':email', $data['email']);
+        $stmt->bindValue(':telephoneNumber', $data['telephoneNumber']);
+        $stmt->bindValue(':id', $data['id']);
+
+        return $stmt->execute();
+    }
 }

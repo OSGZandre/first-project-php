@@ -14,14 +14,14 @@
     <div class="usuarios">
         {% if user is not null %}
             <h2>ID: {{ user.id }}</h2>  
-            <h2>Nome: {{ user.name }}</h2>
+            <h2>Nome: {{ user.userName }}</h2>
             <h2>Email: {{ user.email }}</h2>
             <h2>Telefone: {{ user.telephoneNumber }}</h2>
             <hr /> 
             <form action="{{ path('app_admin_edit', {id: user.id}) }}" method="post"> 
                 <div>
                     <label class="form-label">Nome</label>
-                    <input class="form-control" name="name" value="{{ user.name }}" />
+                    <input class="form-control" name="userName" value="{{ user.userName }}" />
                     <label for="exampleInputEmail1" class="form-label">Email</label>
                     <input class="form-control" type="email" name="email" value="{{ user.email }}" />
                     <label for="exampleInputEmail1" class="form-label">Número de telefone</label>

@@ -5,41 +5,52 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\AdminTable;
 use App\Repository\AdminTableRepository;
-use App\Entity\UserTable;
-use Doctrine\ORM\EntityManagerInterface;
-use \App\Repository\UserTableRepository;
+use App\Repository\UserTableRepository;
 use Symfony\Component\HttpFoundation\Request;
-
 
 class AdminController extends AbstractController
 {
+    private $adminRepository;
+    private $userRepository;
+
+    public function __construct(AdminTableRepository $adminRepository, UserTableRepository $userRepository)
+    {
+        $this->adminRepository = $adminRepository;
+        $this->userRepository = $userRepository;
+    }
+
     /**
      * @Route("/admin", name="app_admin")
      */
-    public function index(EntityManagerInterface $entityManager ): Response
+    public function index(): Response
     {
-        $user = $entityManager ->getRepository(UserTable::class)->findAll();
+        $users = $this->userRepository->listarUser();
+
         return $this->render('admin/index.html.twig', [
-            'user' => $user,
+            'user' => $users,
         ]);
     }
 
     /**
      * @Route("/admin/edit/{id}", name="app_admin_edit", methods={"GET","POST"})
      */
-    public function editUser(UserTable $user, EntityManagerInterface $entityManager, Request $request): Response
+    public function editUser(Request $request, int $id): Response
     {
         if ($request->isMethod('POST')) {
-            $user->getId();
-            $user->setName($request->request->get('name') ?? $user->getName());
-            $user->setEmail($request->request->get('email') ?? $user->getEmail());
-            $user->setTelephoneNumber($request->request->get('telephoneNumber') ?? $user->getTelephoneNumber());
-            $entityManager->flush();
+            $data = [
+                'id' => $id,
+                'userName' => $request->request->get('name'),
+                'email' => $request->request->get('email'),
+                'telephoneNumber' => $request->request->get('telephoneNumber'),
+            ];
+
+            $this->userRepository->editarUser($data);
 
             return $this->redirectToRoute('app_admin');
         }
+
+        $user = $this->userRepository->buscarUserPorId($id);
 
         return $this->render('admin/edit.html.twig', [
             'user' => $user,
