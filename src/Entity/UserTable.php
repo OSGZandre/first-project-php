@@ -34,6 +34,11 @@ class UserTable
      */
     private $telephoneNumber;
 
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $userPassword;
+
 
     public function getId(): ?int
     {
@@ -47,7 +52,7 @@ class UserTable
 
     public function setName(string $userName): self
     {
-        $this->name = $userName;
+        $this->userName = $userName;
 
         return $this;
     }
@@ -75,4 +80,14 @@ class UserTable
 
         return $this;
     }
+
+    public function getUserPassword(): ?string
+    {
+        return $this->userPassword;
+    }
+    public function setUserPassword(string $userPassword): self
+    {
+        $this->userPassword = $userPassword;
+        return $this;
+    }    
 }

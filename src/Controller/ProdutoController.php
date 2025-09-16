@@ -51,7 +51,7 @@ class ProdutoController extends AbstractController
         }
 
         $produtos = $produtoRepository->listaProdutos();
-
+        
         return $this->render('produto/index.html.twig', [
             'produto' => $produto,
             'produtos' => $produtos,

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\UserTable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 /**
  * @extends ServiceEntityRepository<UserTable>
@@ -17,60 +18,73 @@ use Doctrine\Persistence\ManagerRegistry;
 class UserTableRepository extends ServiceEntityRepository
 {
     private $conn;
+    private $passwordHasher;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, PasswordHasherFactoryInterface $passwordHasherFactory)
     {
         parent::__construct($registry, UserTable::class);
         $this->conn = $this->getEntityManager()->getConnection();
+        $this->passwordHasher = $passwordHasherFactory->getPasswordHasher('default');
     }
 
     public function listarUser()
     {
         $sql = "SELECT id, userName, email, telephoneNumber FROM userTable";
-
-        $query = $this->conn->query($sql);
-        return $query->fetchAllAssociative();
+        $stmt = $this->conn->query($sql);
+        return $stmt->fetchAllAssociative();
     }
 
     public function inserirUser($data)
     {
-        $sql = "INSERT INTO userTable (userName, email, telephoneNumber) VALUES (:userName, :email, :telephoneNumber)";
-
+        $sql = "INSERT INTO userTable (userName, email, telephoneNumber, userPassword) VALUES (:userName, :email, :telephoneNumber, :userPassword)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':userName', $data['userName']);
         $stmt->bindValue(':email', $data['email']);
         $stmt->bindValue(':telephoneNumber', $data['telephoneNumber']);
+        $stmt->bindValue(':userPassword', $this->passwordHasher->hash($data['userPassword']));
+        return $stmt->executeQuery();
+    }
 
-        return $stmt->execute();
+    public function buscarPorEmail(string $email): ?array
+    {
+        $sql = "SELECT id, userName, email, telephoneNumber, userPassword FROM userTable WHERE email = :email";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':email', $email);
+        $result = $stmt->executeQuery(); 
+        return $result->fetchAssociative() ?: null;
+    }
+
+    public function verifyPassword(string $plainPassword, string $hashedPassword): bool
+    {
+        return $this->passwordHasher->verify($hashedPassword, $plainPassword);
     }
 
     public function buscarUserPorId($id)
     {
-        $sql = "SELECT id, userName, email, telephoneNumber FROM userTable WHERE id = $id" ;
-
-        $stmt = $this->conn->query($sql);
-        return $stmt->fetchAssociative();
-
+        $sql = "SELECT id, userName, email, telephoneNumber FROM userTable WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $result = $stmt->executeQuery();
+        return $result->fetchAssociative();
     }
+
     public function editarUser($data)
     {
-        $sql = "UPDATE userTable SET userName = :userName, email = :email, telephoneNumber = :telephoneNumber WHERE id = :id";
-
+        $sql = "UPDATE userTable SET userName = :userName, email = :email, telephoneNumber = :telephoneNumber, userPassword = :userPassword WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':userName', $data['userName']);
         $stmt->bindValue(':email', $data['email']);
         $stmt->bindValue(':telephoneNumber', $data['telephoneNumber']);
-        $stmt->bindValue(':id', $data['id']);
-
-        return $stmt->execute();
+        $stmt->bindValue(':userPassword', $this->passwordHasher->hash($data['userPassword']));
+        $stmt->bindValue(':id', $data['id'], \PDO::PARAM_INT);
+        return $stmt->executeQuery();
     }
 
     public function removerUser(int $id)
     {
-        $sql = "DELETE FROM userTable WHERE id = :id ";
+        $sql = "DELETE FROM userTable WHERE id = :id";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(':id' , $id);
-        
-        return $stmt->execute();
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        return $stmt->executeQuery();
     }
 }

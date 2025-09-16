@@ -25,10 +25,10 @@ class AdminController extends AbstractController
      */
     public function index(): Response
     {
-        $users = $this->userRepository->listarUser();
+        $user = $this->userRepository->listarUser();
 
         return $this->render('admin/index.html.twig', [
-            'user' => $users,
+            'user' => $user,
         ]);
     }
 
@@ -43,6 +43,7 @@ class AdminController extends AbstractController
                 'userName' => $request->request->get('userName'),
                 'email' => $request->request->get('email'),
                 'telephoneNumber' => $request->request->get('telephoneNumber'),
+                'userPassword'=> $request->request->get('userPassword'),
             ];
 
             $this->userRepository->editarUser($data);
