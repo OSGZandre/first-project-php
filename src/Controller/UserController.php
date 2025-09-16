@@ -23,15 +23,15 @@ class UserController extends AbstractController
     public function number(): Response
     {
         $users = $this->userRepository->listarUser();
-
         return $this->render('lucky/index.html.twig', [
             'users' => $users,
+            
         ]);
     }
-
+    
     /**
      * @Route("/lucky/save", name="app_lucky_save", methods={"POST"})
-     */
+    */
     public function saveName(Request $request): Response
     {
         $data = [
@@ -39,7 +39,6 @@ class UserController extends AbstractController
             'email' => $request->request->get('email'),
             'telephoneNumber' => $request->request->get('telephoneNumber'),
         ];
-
         $this->userRepository->inserirUser($data);
 
         return $this->redirectToRoute('app_lucky_number');

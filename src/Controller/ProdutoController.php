@@ -1,54 +1,70 @@
 <?php
 namespace App\Controller;
 
-use App\Form\ProdutoType;
 use App\Repository\ProdutoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 class ProdutoController extends AbstractController
 {
     /**
-     * @Route("/produto/novo", name="produto_novo")
+     * @Route("/produto/novo", name="produto_novo", methods={"GET", "POST"})
      */
     public function novo(Request $request, ProdutoRepository $produtoRepository): Response
     {
         $produto = null;
+        $errors = [];
 
         if ($request->query->get("idProduto")) {
             $produto = $produtoRepository->buscaProdutoPorId($request->query->get("idProduto"));
         }
 
-        $form = $this->createForm(ProdutoType::class);
+        if ($request->isMethod('POST')) {
+            $data = [
+                'nameProduto' => $request->request->get('nameProduto'),
+                'preco' => $request->request->get('preco'),
+                'estoque' => $request->request->get('estoque'),
+                'idProduto' => $request->request->get('idProduto'),
+            ];
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            
-            if ($produto) {
-                $data['idProduto'] = $produto['idProduto'];
-                $produtoRepository->atualizarProduto($data);
-            } else {
-                $produtoRepository->inserirProduto($data);
+            if (empty($data['nameProduto'])) {
+                $errors['nameProduto'] = 'O nome do produto é obrigatório.';
             }
-            return $this->redirectToRoute('produto_novo');
+            if (empty($data['estoque'])) {
+                $errors['estoque'] = 'O estoque é obrigatório.';
+            }
+            if (!empty($data['preco']) && !is_numeric($data['preco'])) {
+                $errors['preco'] = 'O preço deve ser um número válido.';
+            }
+
+            if (empty($errors)) {
+                if ($produto) {
+                    $data['idProduto'] = $produto['idProduto'];
+                    $produtoRepository->atualizarProduto($data);
+                } else {
+                    $produtoRepository->inserirProduto($data);
+                }
+                return $this->redirectToRoute('produto_novo');
+            }
         }
+
         $produtos = $produtoRepository->listaProdutos();
 
         return $this->render('produto/index.html.twig', [
-            'form' => $form->createView(),
-            'produtos'=> $produtos
-            ]); 
-        }
-        
-        /**
-         * @Route("/produto/delete/{idProduto}", name="produto_delete", methods={"GET"})
-         */
-        public function deleteProduto(int $idProduto, ProdutoRepository $produtoRepository): Response
-        {
-            $produtoRepository->removerProduto($idProduto);
-            return $this->redirectToRoute('produto_novo');
-        }
+            'produto' => $produto,
+            'produtos' => $produtos,
+            'errors' => $errors,
+        ]);
+    }
+
+    /**
+     * @Route("/produto/delete/{idProduto}", name="produto_delete", methods={"GET"})
+     */
+    public function deleteProduto(int $idProduto, ProdutoRepository $produtoRepository): Response
+    {
+        $produtoRepository->removerProduto($idProduto);
+        return $this->redirectToRoute('produto_novo');
+    }
 }
