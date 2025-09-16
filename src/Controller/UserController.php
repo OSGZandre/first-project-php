@@ -41,6 +41,6 @@ class UserController extends AbstractController
         ];
         $this->userRepository->inserirUser($data);
 
-        return $this->redirectToRoute('app_lucky_number');
+        return $this->redirectToRoute('app_admin');
     }
 }
