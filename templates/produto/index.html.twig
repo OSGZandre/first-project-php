@@ -63,7 +63,7 @@
                             <td>R$ {{ item.preco|number_format(2, ',', '.') }}</td>
                             <td>{{ item.estoque }}</td>
                             <td>
-                                <a href="{{ path('produto_novo', {'idProduto': item.idProduto}) }}" class="btn btn-sm btn-outline-success">Editar</a>
+                                <a href="{{ path('produto_edit', {'idProduto': item.idProduto}) }}" class="btn btn-sm btn-outline-success">Editar</a>
                                 <a href="{{ path('produto_delete', {'idProduto': item.idProduto}) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja excluir este produto?')">Excluir</a>
                             </td>
                         </tr>

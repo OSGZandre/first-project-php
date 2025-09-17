@@ -9,6 +9,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProdutoController extends AbstractController
 {
+
+    private $produtoRepository;
+
+    public function __construct(ProdutoRepository $produtoRepository)
+    {
+        $this->produtoRepository = $produtoRepository;
+    }
     /**
      * @Route("/produto/novo", name="produto_novo", methods={"GET", "POST"})
      */
@@ -40,12 +47,7 @@ class ProdutoController extends AbstractController
             }
 
             if (empty($errors)) {
-                if ($produto) {
-                    $data['idProduto'] = $produto['idProduto'];
-                    $produtoRepository->atualizarProduto($data);
-                } else {
                     $produtoRepository->inserirProduto($data);
-                }
                 return $this->redirectToRoute('produto_novo');
             }
         }
@@ -56,6 +58,31 @@ class ProdutoController extends AbstractController
             'produto' => $produto,
             'produtos' => $produtos,
             'errors' => $errors,
+        ]);
+    }
+
+    /**
+     * @Route("/produto/editar/{idProduto}", name="produto_edit", methods={"GET", "POST"})
+     */
+    public function editProduto(Request $request, $idProduto): Response
+    {
+        if($request->isMethod('POST')) 
+            {
+                $data = [
+                'nameProduto' => $request->request->get('nameProduto'),
+                'preco' => $request->request->get('preco'),
+                'estoque' => $request->request->get('estoque'),
+                'idProduto' => $idProduto,
+                ];
+
+             $this->produtoRepository->atualizarProduto($data);
+
+             return $this->redirectToRoute('produto_novo');
+            }
+            $produto = $this->produtoRepository->buscaProdutoPorId($idProduto);
+
+        return $this->render('produto/edit.html.twig', [
+            'produto' => $produto,
         ]);
     }
 
