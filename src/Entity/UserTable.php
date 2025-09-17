@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserTableRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserTableRepository::class)
@@ -25,7 +26,6 @@ class UserTable
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
-     * @var 
      */
     private $email;
 
@@ -35,7 +35,7 @@ class UserTable
     private $telephoneNumber;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=255)
      */
     private $userPassword;
 
@@ -53,7 +53,6 @@ class UserTable
     public function setName(string $userName): self
     {
         $this->userName = $userName;
-
         return $this;
     }
 
@@ -65,7 +64,6 @@ class UserTable
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -77,7 +75,6 @@ class UserTable
     public function setTelephoneNumber(string $telephoneNumber): self
     {
         $this->telephoneNumber = $telephoneNumber;
-
         return $this;
     }
 
@@ -85,9 +82,24 @@ class UserTable
     {
         return $this->userPassword;
     }
+
     public function setUserPassword(string $userPassword): self
     {
         $this->userPassword = $userPassword;
         return $this;
-    }    
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->userPassword;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
 }

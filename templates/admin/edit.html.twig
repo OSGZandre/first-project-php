@@ -12,6 +12,13 @@
 
     <div class="example-wrapper">
         <h1>Editar Usuário</h1>
+        <hr />
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
         {% if user is not null %}
             <div class="card" style="width: 18rem;">
                 <div class="card-body">

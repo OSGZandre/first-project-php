@@ -25,8 +25,8 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    # - { path: ^/admin, roles: ROLE_ADMIN }
-    # - { path: ^/profile, roles: ROLE_USER }
+    # or require ROLE_ADMIN or IS_AUTHENTICATED_FULLY for /admin*
+    #- { path: "^/admin", roles: [IS_AUTHENTICATED_REMEMBERED, ROLE_ADMIN] }
 
 when@test:
   security:

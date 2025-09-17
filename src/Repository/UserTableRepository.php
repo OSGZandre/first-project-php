@@ -50,7 +50,7 @@ class UserTableRepository extends ServiceEntityRepository
         $sql = "SELECT id, userName, email, telephoneNumber, userPassword FROM userTable WHERE email = :email";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':email', $email);
-        $result = $stmt->executeQuery(); 
+        $result = $stmt->executeQuery();
         return $result->fetchAssociative() ?: null;
     }
 
@@ -70,12 +70,18 @@ class UserTableRepository extends ServiceEntityRepository
 
     public function editarUser($data)
     {
-        $sql = "UPDATE userTable SET userName = :userName, email = :email, telephoneNumber = :telephoneNumber, userPassword = :userPassword WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
+        if (!empty($data['userPassword'])) {
+            $sql = "UPDATE userTable SET userName = :userName, email = :email, telephoneNumber = :telephoneNumber, userPassword = :userPassword WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':userPassword', $this->passwordHasher->hash($data['userPassword']));
+        } else {
+            $sql = "UPDATE userTable SET userName = :userName, email = :email, telephoneNumber = :telephoneNumber WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+        }
+
         $stmt->bindValue(':userName', $data['userName']);
         $stmt->bindValue(':email', $data['email']);
         $stmt->bindValue(':telephoneNumber', $data['telephoneNumber']);
-        $stmt->bindValue(':userPassword', $this->passwordHasher->hash($data['userPassword']));
         $stmt->bindValue(':id', $data['id'], \PDO::PARAM_INT);
         return $stmt->executeQuery();
     }

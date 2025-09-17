@@ -80,7 +80,7 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->render('login/login.html.twig');
+        return $this->render('login/login.html.twig'); // Não passa 'clear_local_storage' aqui
     }
 
     /**
@@ -91,7 +91,7 @@ class UserController extends AbstractController
         $session->invalidate();
         $this->addFlash('success', 'Logout realizado com sucesso!');
         return $this->render('login/login.html.twig', [
-            'clear_local_storage' => true,
+            'clear_local_storage' => false,
         ]);
     }
 }
