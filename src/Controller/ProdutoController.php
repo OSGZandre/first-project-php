@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class ProdutoController extends AbstractController
 {
 
@@ -19,7 +19,7 @@ class ProdutoController extends AbstractController
     /**
      * @Route("/produto/novo", name="produto_novo", methods={"GET", "POST"})
      */
-    public function novo(Request $request, ProdutoRepository $produtoRepository): Response
+    public function novo(Request $request, ProdutoRepository $produtoRepository, SessionInterface $session): Response
     {
         $produto = null;
         $errors = [];
@@ -51,13 +51,18 @@ class ProdutoController extends AbstractController
                 return $this->redirectToRoute('produto_novo');
             }
         }
-
+        if (!$session->has('user_id')) {
+            $this->addFlash('error', 'Você precisa estar logado');
+            return $this->redirectToRoute('app_login');
+        }
         $produtos = $produtoRepository->listaProdutos();
         
         return $this->render('produto/index.html.twig', [
             'produto' => $produto,
             'produtos' => $produtos,
             'errors' => $errors,
+            'user_name' => $session->get('user_name'),
+            'user_email' => $session->get('user_email'),
         ]);
     }
 
