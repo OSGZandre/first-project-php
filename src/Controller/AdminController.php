@@ -27,7 +27,7 @@ class AdminController extends AbstractController
     public function index(SessionInterface $session): Response
     {
         if (!$session->has('user_id')) {
-            $this->addFlash('error', 'Você precisa estar logado!');
+            $this->addFlash('error', 'Você precisa estar logado');
             return $this->redirectToRoute('app_login');
         }
 
