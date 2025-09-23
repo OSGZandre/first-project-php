@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Painel de Administração{% endblock %}
+
+{% block body %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <div class="example-wrapper">
+        <h1>Bem-vindo, {{ user_name }}!</h1>
+        <p>E-mail: {{ user_email }}</p>
+        <hr />
+        <h3>Usuários Cadastrados</h3>
+        <div class="mb-3">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endfor %}
+            {% if users|length > 0 %}
+                {% for user in users %}
+                    <div class="card" style="width: 25rem;">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                Nome: {{ user.userName }}<br />
+                                Email: {{ user.email }}<br />
+                                Telefone: {{ user.telephoneNumber }}<br />
+                            </h4>
+                            <a class="btn btn-outline-success" href="{{ path('app_admin_edit', {id: user.id}) }}">Editar</a>
+                            <a class="btn btn-outline-danger" href="{{ path('app_admin_delete', {id: user.id}) }}">Remover</a>
+                        </div>
+                    </div>
+                    <br />
+                {% endfor %}
+            {% else %}
+                <p>Nenhum usuário cadastrado.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
